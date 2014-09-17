@@ -51,5 +51,5 @@ format_amount(Satoshis) when length(Satoshis) < 9 ->
 format_amount(Satoshis) ->
 	SplitOn = length(Satoshis) - 8,
 	{BTC, Frac} = lists:split(SplitOn, Satoshis),
-	string:strip(string:strip(BTC ++ "." ++ Frac,right,$0),right, $.).
+	string:strip(string:strip(BTC ++ "." ++ Frac,right,$0),right, $.) ++ " BTC".
 	
