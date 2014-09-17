@@ -1,0 +1,14 @@
+{application, blockchain,
+ [
+  {description, "An API to blockchain.info"},
+  {vsn, "0.0.1"},
+  {modules, [
+             blockchain
+            ]},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.
