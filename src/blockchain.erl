@@ -14,7 +14,7 @@ get_address(Address) ->
 	{Worth, FinalTransactions}.
 
 
-format_transaction(WatchingAddress, {struct, T}) ->
+format_transaction(WatchingAddress, T) ->
 	Time = proplists:get_value(<<"time">>, T),
 	Hash = proplists:get_value(<<"hash">>, T),
 	Inputs = proplists:get_value(<<"inputs">>, T),
@@ -36,13 +36,13 @@ is_sent_or_received(WatchingAddress, InputAddresses) ->
 	end.
 
 determine_input_addresses(Ins) ->
-	lists:foldl(fun({struct, In}, Addresses) ->
-		{struct, PrevOut} = proplists:get_value(<<"prev_out">>, In),
+	lists:foldl(fun(In, Addresses) ->
+		PrevOut = proplists:get_value(<<"prev_out">>, In),
 		add_tx_address(PrevOut, Addresses)
 	end, [], Ins).
 
 determine_output_addresses(Outs) ->
-	lists:foldl(fun({struct, Out}, Addresses) ->
+	lists:foldl(fun(Out, Addresses) ->
 		add_tx_address(Out, Addresses)
 	end, [], Outs).
 
@@ -54,12 +54,12 @@ add_tx_address(Tx, Addresses) ->
 	end.
 
 determine_final_value(received, WatchingAddress, _Ins, Outs) ->
-	lists:foldl(fun({struct, Out}, Total) ->
+	lists:foldl(fun(Out, Total) ->
 		Total + add_value_for_out(Out, WatchingAddress)
 	end, 0, Outs);
 determine_final_value(sent, WatchingAddress, Ins, Outs) ->
-	TempTotals = lists:foldl(fun({struct, In}, Total) ->
-		{struct, PrevOut} = proplists:get_value(<<"prev_out">>, In),
+	TempTotals = lists:foldl(fun(In, Total) ->
+		PrevOut = proplists:get_value(<<"prev_out">>, In),
 		Total + add_value_for_out(PrevOut, WatchingAddress)
 	end, 0, Ins),
 	Refunded = determine_final_value(received, WatchingAddress, Ins, Outs),
