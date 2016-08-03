@@ -7,7 +7,7 @@
 get_address(Address) ->
 	URL = "https://blockchain.info/address/" ++ Address ++ "?format=json",
 	{ok, _, _, Json} = ibrowse:send_req(URL, [], get),
-	Struct = wf:json_decode(Json),
+    Struct = jsx:decode(iolist_to_binary(Json)),
 	Worth = proplists:get_value(<<"final_balance">>, Struct),
 	Transactions = proplists:get_value(<<"txs">>, Struct),
 	FinalTransactions = [format_transaction(iolist_to_binary(Address), T) || T <- Transactions],
